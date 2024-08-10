@@ -6,7 +6,7 @@ services:
     build:
     # Dockerfile path
       context: .
-      dockerfile: Dockerfile  
+      dockerfile: ./app/Dockerfile  
     # Mount the local ./app directory to /var/www/html in the container
     volumes:
       - ./app:/var/www/html 
