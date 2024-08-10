@@ -20,6 +20,10 @@ postgresql php react docker ทั้งหมดย่อเป็น P.P.R.D. 
 
 # how to use
 
+```shell
+docker-compose up -d
+```
+
 # reference
 
 เเหลงหนังสือ universal data model
