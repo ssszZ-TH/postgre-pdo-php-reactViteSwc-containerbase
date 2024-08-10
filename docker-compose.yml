@@ -1,0 +1,49 @@
+version: '3.9'
+services:
+  # Apache webserver service
+  webserver:
+    container_name: backendLearnPdo_Apache
+    build:
+    # Dockerfile path
+      context: .
+      dockerfile: Dockerfile  
+    # Mount the local ./app directory to /var/www/html in the container
+    volumes:
+      - ./app:/var/www/html 
+    # Map port 8000 on the host to port 80 on the container 
+    ports:
+      - 8000:80  
+    # wait for postgres container to be up before starting the web server
+    depends_on:
+      - postgres
+
+  postgres:
+    container_name: databaseLearnPdo_Postgres
+    image: postgres:16.0
+    environment:
+      POSTGRES_DB: learn_pdo
+      POSTGRES_USER: db_user
+      POSTGRES_PASSWORD: db_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    environment:
+      # Default email for pgAdmin 4
+      PGADMIN_DEFAULT_EMAIL: admin@email.com
+      # Password for accessing pgAdmin 4
+      PGADMIN_DEFAULT_PASSWORD: adminpassword
+    ports:
+      # Expose pgadmin on 5050 
+      - "5050:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      - postgres
+    restart: always
+
+volumes:
+  pgadmin_data:
