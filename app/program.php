@@ -1,10 +1,14 @@
 <?php
 include 'db.php';
 
+// Set the Content-Type header to application/json for all responses
+header('Content-Type: application/json');
+
 try {
     // Read and decode JSON data
     $data = json_decode(file_get_contents("php://input"), true);
 
+    // POST: Create a new program
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Validate and retrieve data from JSON
         $code = isset($data['code']) ? $data['code'] : null;
@@ -23,36 +27,66 @@ try {
         }
     }
 
+    // GET: Retrieve all programs or a single program
     if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-        $sql = "SELECT * FROM program";
-        $stmt = $pdo->query($sql);
-        $programs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        echo json_encode($programs);
+        if (isset($_GET['code'])) {
+            // Get a single program by code
+            $code = $_GET['code'];
+            $sql = "SELECT * FROM program WHERE code = ?";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([$code]);
+            $program = $stmt->fetch(PDO::FETCH_ASSOC);
+            echo json_encode($program ? $program : ['error' => 'Program not found']);
+        } else {
+            // Get all programs
+            $sql = "SELECT * FROM program";
+            $stmt = $pdo->query($sql);
+            $programs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            echo json_encode($programs);
+        }
     }
 
-    parse_str(file_get_contents("php://input"), $_PUT);
+    // PUT: Update an existing program
     if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
-        $code = $_PUT['code'];
-        $name = $_PUT['name'];
-        $description = $_PUT['description'];
-        $duration = $_PUT['duration'];
+        $code = isset($data['code']) ? $data['code'] : null;
+        $name = isset($data['name']) ? $data['name'] : null;
+        $description = isset($data['description']) ? $data['description'] : null;
+        $duration = isset($data['duration']) ? $data['duration'] : null;
 
-        $sql = "UPDATE program SET name = ?, description = ?, duration = ? WHERE code = ?";
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([$name, $description, $duration, $code]);
-        echo "Program updated successfully";
+        if ($code && $name && $description && $duration !== null) {
+            $sql = "UPDATE program SET name = ?, description = ?, duration = ? WHERE code = ?";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([$name, $description, $duration, $code]);
+
+            if ($stmt->rowCount()) {
+                echo json_encode(['success' => true, 'message' => 'Program updated successfully']);
+            } else {
+                echo json_encode(['error' => 'Program not found or no changes made']);
+            }
+        } else {
+            echo json_encode(['error' => 'Invalid input data']);
+        }
     }
 
-    parse_str(file_get_contents("php://input"), $_DELETE);
+    // DELETE: Remove a program by code
     if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
-        $code = $_DELETE['code'];
+        $code = isset($data['code']) ? $data['code'] : null;
 
-        $sql = "DELETE FROM program WHERE code = ?";
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([$code]);
-        echo "Program deleted successfully";
+        if ($code) {
+            $sql = "DELETE FROM program WHERE code = ?";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([$code]);
+
+            if ($stmt->rowCount()) {
+                echo json_encode(['success' => true, 'message' => 'Program deleted successfully']);
+            } else {
+                echo json_encode(['error' => 'Program not found']);
+            }
+        } else {
+            echo json_encode(['error' => 'Code is required']);
+        }
     }
 } catch (PDOException $e) {
-    echo "Error: " . $e->getMessage();
+    echo json_encode(['error' => $e->getMessage()]);
 }
 ?>
