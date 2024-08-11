@@ -14,4 +14,4 @@ RUN apt-get update \
 WORKDIR /var/www/html
 
 # Copy the PHP code file in /app into the container at /var/www/html
-COPY ./backend .
+COPY . .

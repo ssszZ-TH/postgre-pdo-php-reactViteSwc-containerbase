@@ -1,36 +1,37 @@
-version: '3.9'
+# version: '3.9'
 services:
   # Apache webserver service
-  webserver:
+  backend:
     container_name: backendLearnPdo_Apache
     build:
     # Dockerfile path
-      context: .
-      dockerfile: ./backend/Dockerfile  
+      context: ./backend
+      dockerfile: Dockerfile  
     # Mount the local ./backend directory to /var/www/html in the container
     volumes:
       - ./backend:/var/www/html 
-    # Map port 8000 on the host to port 80 on the container 
+    # Map port 3000 on the host to port 80 on the container 
     ports:
-      - 8000:80  
+      - 3001:80 
     # wait for postgres container to be up before starting the web server
     depends_on:
       - postgres
 
   # react frontend service
-  react:
+  frontend:
     container_name: frontendLearnPdo_React
     build:
     # Dockerfile path
-      context: .
-      dockerfile: ./frontend/Dockerfile
+      context: ./frontend
+      dockerfile: Dockerfile
     volumes:
-      - ./frontend:/app
+      - ./frontend:/frontend
+      - /frontend/node_modules
     ports:
-      - 5173:5173
+      - 3000:3000
     depends_on:
       - postgres
-      - webserver
+      - backend
 
   postgres:
     container_name: databaseLearnPdo_Postgres
@@ -55,7 +56,7 @@ services:
       # Expose pgadmin on 5050 
       - "5050:80"
     volumes:
-      - pgadmin_data:/var/lib/pgadmin
+      - ./pgadmin_data:/var/lib/pgadmin
     depends_on:
       - postgres
     restart: always
