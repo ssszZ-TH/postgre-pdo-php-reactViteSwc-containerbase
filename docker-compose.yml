@@ -17,6 +17,18 @@ services:
     depends_on:
       - postgres
 
+  # react frontend service
+  react:
+    container_name: frontendLearnPdo_React
+    build:
+    # Dockerfile path
+      context: .
+      dockerfile: ./frontend/Dockerfile
+    volumes:
+      - ./frontend:/app
+    ports:
+      - 3000:3000
+
   postgres:
     container_name: databaseLearnPdo_Postgres
     image: postgres:16.0
