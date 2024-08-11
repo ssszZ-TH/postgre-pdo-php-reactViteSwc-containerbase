@@ -6,10 +6,10 @@ services:
     build:
     # Dockerfile path
       context: .
-      dockerfile: ./app/Dockerfile  
-    # Mount the local ./app directory to /var/www/html in the container
+      dockerfile: ./backend/Dockerfile  
+    # Mount the local ./backend directory to /var/www/html in the container
     volumes:
-      - ./app:/var/www/html 
+      - ./backend:/var/www/html 
     # Map port 8000 on the host to port 80 on the container 
     ports:
       - 8000:80  
