@@ -1,10 +1,23 @@
 <?php
 include 'db.php';
 
-// Set the Content-Type header to application/json for all responses
-header('Content-Type: application/json');
+
+
+
 
 try {
+
+    // Set the Content-Type header to application/json for all responses
+    header('Content-Type: application/json');
+
+    // Handle CORS
+    header("Access-Control-Allow-Origin: *");
+    header("Access-Control-Allow-Methods: POST, GET, PUT, DELETE, OPTIONS");
+    header("Access-Control-Allow-Headers: Content-Type, Authorization");
+    // Handle preflight (OPTIONS) requests
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    exit(0);
+}
     // Read and decode JSON data
     $data = json_decode(file_get_contents("php://input"), true);
 
