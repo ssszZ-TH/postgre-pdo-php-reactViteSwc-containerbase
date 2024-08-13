@@ -1,10 +1,6 @@
 <?php
 include 'db.php';
 
-
-
-
-
 try {
 
     // Set the Content-Type header to application/json for all responses
