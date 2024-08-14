@@ -14,13 +14,13 @@ import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 
-const pages = ["programs", "entity2", "entity3"];
+const pages = ["user", "entity2", "entity3"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
 function ResponsiveAppBar(props) {
   
   // eslint-disable-next-line react/prop-types
-  const { focusOnProgram } = props;
+  const { focusOnUser } = props;
 
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
@@ -42,8 +42,8 @@ function ResponsiveAppBar(props) {
 
   const handleFocusEntity = (name) => {
     console.log(`click ${name}`);
-    if (name == "programs") {
-      focusOnProgram();
+    if (name == "user") {
+      focusOnUser();
     }
   };
 
