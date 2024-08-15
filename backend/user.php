@@ -1,7 +1,11 @@
 <?php
 // Handle CORS
-header('Content-Type: application/json');
+// กำหนด CORS headers
 header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: POST, GET, OPTIONS, PUT, DELETE");
+header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+header("Access-Control-Allow-Credentials: true");
+
 include 'db.php';
 
 // กำหนดประเภทของ content ให้เป็น JSON
